@@ -4,80 +4,91 @@ const generateSecretKey = require("../AuthToken/AuthToken");
 
 const secretKey = generateSecretKey();
 
-exports.AddProduct = (req, res) => {
-  console.log("Request Headers:", req.headers);
-
+exports.isAdmin = (req, res, next) => {
   const token = req.headers.authorization;
-
   if (!token) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
-      message: "Token not provided or incorrect format",
+      message: "Invalid token",
     });
   }
 
   try {
-    const decodedToken = jwt.verify(token, secretKey);
-
-    if (decodedToken.role !== "admin") {
-      return res.status(403).json({
+    const decoded_token = jwt.verify(token, secretKey);
+    if (decoded_token.role !== "admin") {
+      res.status(401).json({
         success: false,
-        message: "Only Admins can add the product",
+        message: "Unable to decode the token",
       });
     }
-
-    const {
-      name,
-      description,
-      price,
-      category,
-      imgURL,
-      stockQuantity,
-      ratings,
-    } = req.body;
-
-    const newProduct = new productsModel({
-        id: Math.floor(Math.random() * 1000000), 
-      name: name,
-      description: description,
-      price: price,
-      category: category,
-      imgURL: imgURL,
-      stockQuantity: stockQuantity,
-      ratings: ratings,
-    });
-
-    newProduct
-      .save()
-      .then((product) => {
-        res.status(200).json({
-          success: true,
-          message: "Product added successfully",
-          product: product,
-        });
-      })
-      .catch((err) => {
-        res.status(500).json({
-          success: false,
-          message: "Error while adding product",
-          error: err,
-        });
-      });
-  } catch (err) {
-    console.error("Token Verification Error:", err);
+    next();
+  } catch (error) {
+    console.log(error);
     res.status(500).json({
       success: false,
       message: "Token verification failed",
-      error: err.message,
+      error: error.message,
     });
   }
 };
 
-exports.ShowAllProduct = async(req, res) => {
-    console.log("product list")
+exports.AddProduct = [
+  this.isAdmin,
+  (req, res) => {
+    try {
+      const {
+        name,
+        description,
+        price,
+        category,
+        imgURL,
+        stockQuantity,
+        ratings,
+      } = req.body;
+
+      const newProduct = new productsModel({
+        id: Math.floor(Math.random() * 1000000),
+        name: name,
+        description: description,
+        price: price,
+        category: category,
+        imgURL: imgURL,
+        stockQuantity: stockQuantity,
+        ratings: ratings,
+      });
+
+      newProduct
+        .save()
+        .then((product) => {
+          res.status(200).json({
+            success: true,
+            message: "Product added successfully",
+            product: product,
+          });
+        })
+        .catch((err) => {
+          res.status(500).json({
+            success: false,
+            message: "Error while adding product",
+            error: err,
+          });
+        });
+    } catch (err) {
+      console.error("Token Verification Error:", err);
+      res.status(500).json({
+        success: false,
+        message: "Token verification failed",
+        error: err.message,
+      });
+    }
+  },
+];
+
+exports.ShowAllProduct = async (req, res) => {
+  console.log("product list");
   try {
     const product = await productsModel.find({});
-    console.log(product)
+    console.log(product);
     res.status(200).json({
       success: true,
       product: product,
@@ -91,3 +102,40 @@ exports.ShowAllProduct = async(req, res) => {
     });
   }
 };
+
+exports.EditProduct = [
+  this.isAdmin,
+  async (req, res) => {
+    try {
+      let productId = req.params.id;
+      productId = productId.replace(/^:+/, "");
+      const updatedData = req.body;
+      console.log(productId, updatedData);
+      const product = await productsModel.findByIdAndUpdate(
+        productId,
+        updatedData,
+        { new: true, runValidators: true }
+      );
+      console.log(product);
+      if (!product) {
+        return res.status(404).json({
+          success: false,
+          message: "Product not found",
+        });
+      }
+      res.status(200).json({
+        success: true,
+        message: "Product updated successfully",
+        product: product,
+      });
+    } catch (error) {
+      console.error("Token Verification Error:", error);
+      res.status(500).json({
+        success: false,
+        message: "Token verification failed",
+        error: error.message,
+      });
+    }
+  },
+];
+

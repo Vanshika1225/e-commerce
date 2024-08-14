@@ -37,6 +37,7 @@ exports.AddProduct = (req, res) => {
     } = req.body;
 
     const newProduct = new productsModel({
+        id: Math.floor(Math.random() * 1000000), 
       name: name,
       description: description,
       price: price,
@@ -68,6 +69,25 @@ exports.AddProduct = (req, res) => {
       success: false,
       message: "Token verification failed",
       error: err.message,
+    });
+  }
+};
+
+exports.ShowAllProduct = async(req, res) => {
+    console.log("product list")
+  try {
+    const product = await productsModel.find({});
+    console.log(product)
+    res.status(200).json({
+      success: true,
+      product: product,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while fetching products",
+      error: error.message,
     });
   }
 };

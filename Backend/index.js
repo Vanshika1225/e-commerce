@@ -17,7 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use("/api/auth", userRouter);
 app.get("/api/users/:id", userController.GetUserProfile);
 
-app.use("/api/products",ProductRoute)
+app.use("/api/products",ProductRoute);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

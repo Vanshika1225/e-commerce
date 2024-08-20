@@ -1,4 +1,4 @@
-const { default: mongoose } = require('mongoose');
+import {mongoose} from 'mongoose';
 
 async function main(){
     await mongoose.connect("mongodb+srv://Vanshika1609:Vanshika1609@cluster0.2h74f3f.mongodb.net/")

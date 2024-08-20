@@ -1,9 +1,9 @@
-const usersModel = require("../Model/UsersModel");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const generateSecretKey = require("../AuthToken/AuthToken");
+import usersModel from "../Model/UsersModel.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { secretKey } from "../AuthToken/AuthToken.js";
 
-exports.RegisterUser = async (request, response) => {
+export const RegisterUser = async (request, response) => {
   try {
     const { id, name, email, password, address, role } = request.body;
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -30,7 +30,7 @@ exports.RegisterUser = async (request, response) => {
   }
 };
 
-exports.LoginUser = async (req, res) => {
+export const LoginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     console.log(email, password);
@@ -41,7 +41,7 @@ exports.LoginUser = async (req, res) => {
         message: "User not found",
       });
     }
-    console.log(existingUser);
+    console.log(existingUser); 
     console.log(
       bcrypt.compare(await password, existingUser.password),
       password,
@@ -55,9 +55,10 @@ exports.LoginUser = async (req, res) => {
       });
     }
 
-    const token = jwt.sign({ userId: existingUser._id, role: existingUser.role }, generateSecretKey(), {
+    const token = jwt.sign({ userId: existingUser._id, role: existingUser.role }, secretKey , {
       expiresIn: "1h",
     });
+
     res.cookie("token", token);
     res.json({
       success: true,
@@ -73,7 +74,7 @@ exports.LoginUser = async (req, res) => {
   }
 };
 
-exports.Logout = async (req, res) => {
+export const Logout = async (req, res) => {
   try {
     res.clearCookie("token", req.params.token);
     res.status(200).json({
@@ -90,7 +91,7 @@ exports.Logout = async (req, res) => {
   }
 };
 
-exports.GetUserProfile = async (req, res) => {
+export const GetUserProfile = async (req, res) => {
   try {
     let userId = req.params.id.trim();
     userId = userId.replace(/^:+/, "");

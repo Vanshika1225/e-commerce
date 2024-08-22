@@ -66,7 +66,7 @@ export const DeleteProduct = async (req, res) => {
     }
     let productId = req.params.id;
     productId = productId.replace(/^:/, '');
-    const deletedProduct = await findByIdAndDeleteProduct(productId);
+    const deletedProduct = await findByIdAndDeleteProduct(productId); 
     console.log(productId, deletedProduct);
     if (!deletedProduct) {
       return res.status(401).json({

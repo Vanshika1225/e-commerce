@@ -1,51 +1,42 @@
 import {mongoose} from "mongoose";
 
-const ProductSchema = new mongoose.Schema({
-  productId: {
-    type: Number,
-    required: true,
-  },
-  quantity: {
-    type: Number,
-    required: true,
-    min: 1,
-  },
-});
-
 const ordersSchema = new mongoose.Schema({
-  id: {
-    type: Number,
-    required: true,
+  user:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'User',
+    required:true
   },
-  userId: {
-    type: Number,
-    required: true,
+  product:{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:'Products',
+    required:true
   },
-  ProductsList: {
-    type: [ProductSchema],
-    required: true,
-    default: [],
-    validate: {
-      validator: function (products) {
-        return products.length > 0;
-      },
-      message: "Products list should not be empty.",
-    },
+  quantity:{
+    type:Number,
+    required:true,
+    min:1
   },
-  totalAmount: {
-    type: Number,
-    required: true,
+  paymentStatus:{
+    type:String,
+    enum:["Pending","Completed"],
+    default:"Pending"
   },
-  orderStatus: {
-    type: String,
-    required: true,
-    enum: ["Pending", "Delivered", "Canceled"],
-    default: "Pending",
+  ShippingAddress:{
+    type:String,
+    required:true
   },
-  orderDate: {
-    type: Date,
-    required: true,
-    default: Date.now,
+  totalAmount:{
+    type:Number,
+    required:true
+  },
+  deliveryStatus:{
+    type:String,
+    enum:["Pending","Delivered","Cancelled"],
+    default:"Pending"
+  },
+  orderDate:{
+    type:Date,
+    default:Date.now
   },
 });
 

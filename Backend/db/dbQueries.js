@@ -23,3 +23,7 @@ export const findByIdAndUpdatee = async (id,updatedData) => {
 export const findByIdAndDeleteProduct = async (productId) => {
   return await productsModel.findByIdAndDelete(productId);
 };
+
+export const findProductById = async (productId) => {
+  return await productsModel.findById(productId)
+}

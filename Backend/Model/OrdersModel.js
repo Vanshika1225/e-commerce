@@ -1,12 +1,12 @@
 import {mongoose} from "mongoose";
 
 const ordersSchema = new mongoose.Schema({
-  user:{
+  User:{
     type:mongoose.Schema.Types.ObjectId,
     ref:'User',
     required:true
   },
-  product:{
+  Products:{
     type:mongoose.Schema.Types.ObjectId,
     ref:'Products',
     required:true
@@ -38,6 +38,15 @@ const ordersSchema = new mongoose.Schema({
     type:Date,
     default:Date.now
   },
+  name:{
+    type:String,
+    required:true
+  },
+  imgURL:{
+    type:String,
+    required:true,
+    message:"Invalid URL"
+  }
 });
 
 const orderModel = mongoose.model("orders", ordersSchema);

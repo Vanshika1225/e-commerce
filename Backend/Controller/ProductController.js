@@ -5,10 +5,11 @@ import {
   EditProduct,
   ShowAllProducts,
 } from "../services/ProductService.js";
+import VerifyToken from "../utils/VerifyToken.js";
 
 const productRouter = express.Router();
 
-productRouter.post("/add-product",  (req, res) => {
+productRouter.post("/add-product", VerifyToken , (req, res) => {
   try {
     const AddProduct = addProduct(req);
     res.status(201).json({
@@ -43,7 +44,7 @@ productRouter.get("/product-list", async (req, res) => {
   }
 });
 
-productRouter.put("/edit-product/:id", async (req, res) => {
+productRouter.put("/edit-product/:id", VerifyToken , async (req, res) => {
   try {
     const product = await EditProduct(req);
     console.log("product ", product);
@@ -62,7 +63,7 @@ productRouter.put("/edit-product/:id", async (req, res) => {
   }
 });
 
-productRouter.delete("/delete-product/:id", async (req, res) => {
+productRouter.delete("/delete-product/:id",VerifyToken , async (req, res) => {
   console.log("delete")
   try {
    const deletedProduct = await DeleteProduct(req);

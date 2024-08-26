@@ -1,41 +1,35 @@
 import { mongoose } from "mongoose";
 
-const ProductSchema = new mongoose.Schema({
-  productId: {
-    type: mongoose.Schema.type.object,
+const cartSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
+    ref: "User",
+  },
+  Products: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: "Product",
   },
   quantity: {
     type: Number,
     required: true,
     min: 1,
+    default: 1,
   },
-});
-
-const cartSchema = new mongoose.Schema({
-  id: {
+  subTotal: {
     type: Number,
     required: true,
+    default: 0,
   },
-  userId: {
-    type: Number,
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  imgURL:{
+    type: String,
     required: true,
-  },
-  ProductsList: {
-    type: [ProductSchema],
-    required: true,
-    default: [],
-    validate: {
-      validator: function (products) {
-        return products.length > 0;
-      },
-      message: "Products list should not be empty.",
-    },
-  },
-  totalAmount: {
-    type: Number,
-    required: true,
-  },
+  }
 });
 
 const cartModel = mongoose.model("cart", cartSchema);

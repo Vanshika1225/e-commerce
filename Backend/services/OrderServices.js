@@ -1,19 +1,7 @@
 import orderModel from "../Model/OrdersModel.js";
-import jwt from "jsonwebtoken";
-import { secretKey } from "../utils/AuthToken.js";
 import { deleteProductById, findProductById } from "../db/dbQueries.js";
 
-export const createOrder = async (req, res) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    throw new Error("Invalid token");
-  }
-  const decoded_token = jwt.verify(token, secretKey);
-
-  if (!decoded_token) {
-    throw new Error("Unable to decode the token");
-  }
-
+export const createOrder = async (req, res ) => {
   const { id, productId, paymentStatus, ShippingAddress, quantity } = req.body;
 
   const product = await findProductById(productId);
@@ -40,25 +28,15 @@ export const createOrder = async (req, res) => {
   return savedOrder;
 };
 
-export const deleteOrder = async(req, res) => {
-    const token = req.headers.authorization;
-    if (!token) {
-      throw new Error("Invalid token");
-    }
-    const decoded_token = jwt.verify(token, secretKey);
-    console.log("decode token : ", decoded_token)
-    if (decoded_token.role !== "admin") {
-      throw new Error("Unable to decode the token");
-    }
+export const deleteOrder = async (req, res) => {
+  let { id } = req.params;
+  id = id.replace(/^:/, "");
+  console.log(req.params);
 
-    let { id } = req.params;
-    id = id.replace(/^:/, "");
-    console.log(req.params)
-
-    const deletedOrder =await deleteProductById(id);
-    console.log(deletedOrder)
-    if(!deletedOrder){
-        throw new Error("Order not found");
-    }
-    return deletedOrder;
-}
+  const deletedOrder = await deleteProductById(id);
+  console.log(deletedOrder);
+  if (!deletedOrder) {
+    throw new Error("Order not found");
+  }
+  return deletedOrder;
+};

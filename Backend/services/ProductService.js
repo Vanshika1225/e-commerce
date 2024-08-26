@@ -1,17 +1,7 @@
 import productsModel from "../Model/ProductsModel.js";
-import jwt from "jsonwebtoken";
-import { secretKey } from "../utils/AuthToken.js";
 import { findByIdAndDeleteProduct, findByIdAndUpdatee, getAllProducts } from "../db/dbQueries.js";
 
 export const addProduct = (req, res) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    throw new Error("Invalid token");
-  }
-  const decoded_token = jwt.verify(token, secretKey);
-  if (decoded_token.role !== "admin") {
-    throw new Error("Unable to decode the token");
-  }
   const { name, description, price, category, imgURL, stockQuantity, ratings } =
     req.body;
   const newProduct = new productsModel({
@@ -32,15 +22,6 @@ export const ShowAllProducts = async (req, res) => {
 };
 
 export const EditProduct = async (req, res) => {
-  const token = req.headers.authorization;
-  if (!token) {
-    throw new Error("Invalid token");
-  }
-  const decoded_token = jwt.verify(token, secretKey);
-  console.log("decode token : ", decoded_token)
-  if (decoded_token.role !== "admin") {
-    throw new Error("Unable to decode the token");
-  }
   let { id } = req.params;
   id = id.replace(/^:/, "");
   const updatedData = req.body;
@@ -55,15 +36,6 @@ export const EditProduct = async (req, res) => {
 };
 
 export const DeleteProduct = async (req, res) => {
-    const token = req.headers.authorization;
-    if (!token) {
-      throw new Error("Invalid token");
-    }
-    const decoded_token = jwt.verify(token, secretKey);
-    console.log("decode token : ", decoded_token)
-    if (decoded_token.role !== "admin") {
-      throw new Error("Unable to decode the token");
-    }
     let productId = req.params.id;
     productId = productId.replace(/^:/, '');
     const deletedProduct = await findByIdAndDeleteProduct(productId); 

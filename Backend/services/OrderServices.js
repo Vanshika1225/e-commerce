@@ -2,7 +2,7 @@ import orderModel from "../Model/OrdersModel.js";
 import { deleteProductById, findProductById } from "../db/dbQueries.js";
 
 export const createOrder = async (req, res ) => {
-  const { id, productId, paymentStatus, ShippingAddress, quantity } = req.body;
+  let { id, productId, paymentStatus,paymentOption, ShippingAddress, quantity } = req.body;
 
   const product = await findProductById(productId);
   if (!product) {
@@ -18,6 +18,7 @@ export const createOrder = async (req, res ) => {
     Products: productId,
     quantity,
     paymentStatus,
+    paymentOption,
     ShippingAddress,
     totalAmount,
     name,

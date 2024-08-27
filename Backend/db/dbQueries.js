@@ -1,3 +1,4 @@
+import cartModel from "../Model/CartModel.js";
 import orderModel from "../Model/OrdersModel.js";
 import productsModel from "../Model/ProductsModel.js";
 import usersModel from "../Model/UsersModel.js";
@@ -31,4 +32,8 @@ export const findProductById = async (productId) => {
 
 export const deleteProductById = async (id) => {
   return await orderModel.findByIdAndDelete(id);
+}
+
+export const findUserIdInCart = async (userId) => {
+  return await cartModel.findOne({ userId })
 }

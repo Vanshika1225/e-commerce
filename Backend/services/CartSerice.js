@@ -1,23 +1,43 @@
-// import express from "express";
-// import { CreateCart } from "../Controller/CartController.js";
-// const CartRouter = express.Router();
+import cartModel from "../Model/CartModel.js";
+import { findProductById, findUserIdInCart } from "../db/dbQueries.js";
 
-// CartRouter.post("/create-cart", async (req, res) => {
-//   try {
-//     const cartData = await CreateCart(req);
-//     res.status(200).json({
-//       success: true,
-//       message: "Cart created successfully",
-//       cartData,
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(401).json({
-//       success: true,
-//       message: "Something went wrong",
-//       error: error.message,
-//     });
-//   }
-// });
+export const CreateCart = async (req, res) => {
+  const { userId, productId, quantity } = req.body;
 
-// export default CartRouter;
+  let cart = await findUserIdInCart(userId);
+
+  const product = await findProductById(productId);
+
+  if (!product) {
+    throw new Error("Product Not Found!");
+  }
+
+  const name = product.name;
+  const imgURL = product.imgURL;
+  const price = product.price;
+
+  if (!cart) {
+    cart = new cartModel({
+      userId,
+      items: [],
+      totalAmount: 0,
+    });
+  }
+
+  const cartIndex = cart.items.findIndex(
+    (item) => item.productId.toString() === productId.toString()
+  );
+
+  console.log("cartIndex : ", cartIndex);
+
+  if (cartIndex !== -1) {
+    cart.items[cartIndex].quantity += quantity;
+  } else {
+    cart.items.push({ productId, quantity, name, imgURL ,price});
+  }
+  cart.totalAmount = cart.items.reduce(
+    (sum, item) => sum + product.price * item.quantity,
+    0
+  );
+  return await cart.save();
+};

@@ -21,6 +21,11 @@ const ordersSchema = new mongoose.Schema({
     enum:["Pending","Completed"],
     default:"Pending"
   },
+  paymentOption:{
+    type:String,
+    enum:["COD","Online Transfer"],
+    default:"COD"
+  },
   ShippingAddress:{
     type:String,
     required:true

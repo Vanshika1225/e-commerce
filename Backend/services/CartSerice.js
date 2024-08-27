@@ -28,12 +28,10 @@ export const CreateCart = async (req, res) => {
     (item) => item.productId.toString() === productId.toString()
   );
 
-  console.log("cartIndex : ", cartIndex);
-
   if (cartIndex !== -1) {
     cart.items[cartIndex].quantity += quantity;
   } else {
-    cart.items.push({ productId, quantity, name, imgURL ,price});
+    cart.items.push({ productId, quantity, name, imgURL, price });
   }
   cart.totalAmount = cart.items.reduce(
     (sum, item) => sum + product.price * item.quantity,
@@ -41,3 +39,22 @@ export const CreateCart = async (req, res) => {
   );
   return await cart.save();
 };
+ 
+
+export const removeCartItem = async(req,res)=>{
+  const {userId, productId} = req.body;
+  const cart = await findUserIdInCart(userId);
+  if(!cart){
+    throw new Error("Cart not found!");
+  }
+  const cartIndex = cart.items.findIndex(
+    (item) => item.productId.toString() === productId.toString()
+  );
+  if(cartIndex === -1){
+    throw new Error("Product not found in cart!");
+  }
+  cart.items.splice(cartIndex,1);
+  cart.totalAmount=0
+  cart.totalAmount = cart.items.reduce((sum,item) => sum+item.quantity * item.price, 0)
+  return await cart.save();
+}

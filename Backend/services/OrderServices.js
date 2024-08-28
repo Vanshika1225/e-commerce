@@ -1,5 +1,5 @@
 import orderModel from "../Model/OrdersModel.js";
-import { deleteProductById, findProductById } from "../db/dbQueries.js";
+import { deleteProductById, findProductById, showOrderData } from "../db/dbQueries.js";
 
 export const createOrder = async (req, res ) => {
   let { id, productId, paymentStatus,paymentOption, ShippingAddress, quantity } = req.body;
@@ -28,6 +28,11 @@ export const createOrder = async (req, res ) => {
   const savedOrder = await order.save();
   return savedOrder;
 };
+
+export const getOrderData = async()=>{
+  const orderData = await showOrderData();
+  return orderData;
+}
 
 export const deleteOrder = async (req, res) => {
   let { id } = req.params;

@@ -1,5 +1,5 @@
 import express from "express";
-import { createOrder, deleteOrder } from "../services/OrderServices.js";
+import { createOrder, deleteOrder, getOrderData } from "../services/OrderServices.js";
 import VerifyToken from "../utils/VerifyToken.js";
 
 const OrderRouter = express.Router();
@@ -20,6 +20,25 @@ OrderRouter.post("/create-order", VerifyToken, async (req, res) => {
       error: error.message,
     });
   }
+});
+
+OrderRouter.get("/get-orders", VerifyToken, async (req, res) => {
+   try{
+    const OrderData =  await getOrderData();
+    res.status(200).json({
+      success:true,
+      message:"Order data fetched successfully!",
+      OrderData
+    })
+
+   }catch(error){
+    console.log(error);
+    res.status(401).json({
+      success:false,
+      message:"Something went wrong!",
+      error:error.message
+    })
+   }
 });
 
 OrderRouter.delete("/delete-order/:id", VerifyToken, async (req, res) => {

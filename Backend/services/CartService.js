@@ -1,6 +1,6 @@
 import cartModel from "../Model/CartModel.js";
 import {
-  fetchData,
+  fetchCartData,
   findProductById,
   findUserIdInCart,
 } from "../db/dbQueries.js";
@@ -45,7 +45,7 @@ export const CreateCart = async (req, res) => {
 };
 
 export const getCartData = async (req, res) => {
-  const cartData = await fetchData(req);
+  const cartData = await fetchCartData(req);
   return cartData;
 };
 

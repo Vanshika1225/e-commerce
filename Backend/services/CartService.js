@@ -1,5 +1,9 @@
 import cartModel from "../Model/CartModel.js";
-import { findProductById, findUserIdInCart } from "../db/dbQueries.js";
+import {
+  fetchData,
+  findProductById,
+  findUserIdInCart,
+} from "../db/dbQueries.js";
 
 export const CreateCart = async (req, res) => {
   const { userId, productId, quantity } = req.body;
@@ -39,22 +43,50 @@ export const CreateCart = async (req, res) => {
   );
   return await cart.save();
 };
- 
 
-export const removeCartItem = async(req,res)=>{
-  const {userId, productId} = req.body;
+export const getCartData = async (req, res) => {
+  const cartData = await fetchData(req);
+  return cartData;
+};
+
+export const updateCartQuantity = async (req, res) => {
+  const { userId, productId } = req.body;
   const cart = await findUserIdInCart(userId);
-  if(!cart){
-    throw new Error("Cart not found!");
+  if (!cart) {
+    throw new Error("User Not Found!");
+  }
+  const cartIndex = await cart.items.findIndex(
+    (item) => item.productId.toString() === productId.toString()
+  );
+  if (cartIndex === -1) {
+    throw new Error("Product Not Fou7nd!");
+  }
+  cart.items[cartIndex].quantity = req.body.quantity;
+  cart.totalAmount = cart.items.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0
+  );
+  return await cart.save();
+};
+
+export const removeCartItem = async (req, res) => {
+  const { userId, productId } = req.body;
+  const cart = await findUserIdInCart(userId);
+  console.log("cart : ", cart);
+  if (!cart) {
+    throw new Error("User not found!");
   }
   const cartIndex = cart.items.findIndex(
     (item) => item.productId.toString() === productId.toString()
   );
-  if(cartIndex === -1){
+  if (cartIndex === -1) {
     throw new Error("Product not found in cart!");
   }
-  cart.items.splice(cartIndex,1);
-  cart.totalAmount=0
-  cart.totalAmount = cart.items.reduce((sum,item) => sum+item.quantity * item.price, 0)
+  cart.items.splice(cartIndex, 1);
+  cart.totalAmount = 0;
+  cart.totalAmount = cart.items.reduce(
+    (sum, item) => sum + item.quantity * item.price,
+    0
+  );
   return await cart.save();
-}
+};

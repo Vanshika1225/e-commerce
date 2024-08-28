@@ -37,3 +37,7 @@ export const deleteProductById = async (id) => {
 export const findUserIdInCart = async (userId) => {
   return await cartModel.findOne({ userId })
 }
+
+export const fetchData = async ()=>{
+  return await cartModel.find({})
+}

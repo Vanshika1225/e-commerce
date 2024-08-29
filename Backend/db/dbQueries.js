@@ -49,3 +49,8 @@ export const showOrderData = async () => {
 export const deleteProductById = async (id) => {
   return await orderModel.findByIdAndDelete(id);
 };
+
+
+export const findOrderByIdInUpdate = async (id) => {
+  return await orderModel.findById(id);
+};

@@ -26,7 +26,7 @@ CartRouter.post("/create-cart", VerifyToken, async (req, res) => {
   }
 });
 
-CartRouter.get("/show-cart", VerifyToken, async (req, res) => {
+CartRouter.get("/mshow-cart", VerifyToken, async (req, res) => {
   try{
     const getData = await getCartData(req);;
     res.status(200).json({

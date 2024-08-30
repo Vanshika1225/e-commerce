@@ -6,80 +6,47 @@ import {
   ShowAllProducts,
 } from "../services/ProductService.js";
 import VerifyToken from "../utils/VerifyToken.js";
+import Success from "../utils/Success.js";
+import ErrorMessage from "../utils/ErrorMessage.js";
 
-const productRouter = express.Router();
+const router = express.Router();
 
-productRouter.post("/add-product", VerifyToken , (req, res) => {
+router.use(VerifyToken);
+
+router.post("/add-product", (req, res) => {
   try {
     const AddProduct = addProduct(req);
-    res.status(201).json({
-      success: true,
-      message: "Product added successfully",
-      product: AddProduct,
-    });
+    Success(res, 200, message.success, AddProduct);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Error adding product",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-productRouter.get("/product-list", async (req, res) => {
+router.get("/product-list", async (res) => {
   try {
     const products = await ShowAllProducts();
-    res.status(200).json({
-      success: true,
-      products,
-    });
+    Success(res, 200, message.success, products);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Error fetching products",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-productRouter.put("/edit-product/:id", VerifyToken , async (req, res) => {
+router.put("/edit-product/:id", async (req, res) => {
   try {
     const product = await EditProduct(req);
-    console.log("product ", product);
-    return res.status(201).json({
-      success: true,
-      message: "Product updated successfully",
-      product,
-    });
+    Success(res, 200, message.success, product);
   } catch (error) {
-    console.log(error);
-    res.status(401).json({
-      success: false,
-      message: "token validation error",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-productRouter.delete("/delete-product/:id",VerifyToken , async (req, res) => {
-  console.log("delete")
+router.delete("/delete-product/:id", async (req, res) => {
   try {
-   const deletedProduct = await DeleteProduct(req);
-    return res.status(201).json({
-      success: true,
-      message: "Product deleted successfully",
-      deletedProduct: deletedProduct,
-    });
+    const deletedProduct = await DeleteProduct(req);
+    Success(res, 200, message.success, deletedProduct);
   } catch (error) {
-    console.log(error);
-    res.status(401).json({
-      success: false,
-      message: "token validation error",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-export default productRouter;
+export default router;

@@ -1,63 +1,40 @@
+import express from "express";
+import Success from '../utils/Success.js'
 import {
   createUser,
   getUserProfile,
   LoginUser,
 } from "../services/userServices.js";
-import express from "express";
+import ErrorMessage from "../utils/ErrorMessage.js";
 
-const userRouter = express.Router();
+const router = express.Router();
 
-userRouter.post("/register", (req, res) => {
+router.post("/register",async (req, res) => {
   try {
-    const registeredUsers = createUser(req);
-    res.status(201).json({
-      success: true,
-      message: "User Registered Successfully",
-      registeredUsers,
-    });
+    const data =await createUser(req);
+    Success(res, 200, data)
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-userRouter.post("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
-    const { token } = await LoginUser(req);
-    res.status(201).json({
-      success: true,
-      message: "User LoggedIn Successfully",
-      token,
-    });
+    const token  = await LoginUser(req);
+    Success(res, 200, token);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-userRouter.get("/users/:id", async (req, res) => {
+router.get("/users/:id", async (req, res) => {
   try {
     const user = await getUserProfile(req);
-    res.json({
-      success: true,
-      user,
-    });
+    console.log("user",user)
+    Success(res, 200, user);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Something went wrong",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-export default userRouter;
+export default router;

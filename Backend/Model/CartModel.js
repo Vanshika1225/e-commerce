@@ -19,10 +19,10 @@ const cartItemSchema = new mongoose.Schema({
     required: true,
     message: "Invalid URL",
   },
-  price:{
+  price: {
     type: Number,
     required: true,
-  }
+  },
 });
 
 const cartSchema = new mongoose.Schema({
@@ -45,3 +45,13 @@ const cartSchema = new mongoose.Schema({
 
 const cartModel = mongoose.model("cart", cartSchema);
 export default cartModel;
+
+// .create(data)
+
+// .updateOne()
+
+// {_id:dfdf}
+// deleteOne()
+
+// jason_momoa@gameofthron.es
+// 59b99dbdcfa9a34dcd7885c8

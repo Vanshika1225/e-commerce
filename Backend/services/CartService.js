@@ -1,20 +1,10 @@
 import cartModel from "../Model/CartModel.js";
-import {
-  fetchCartData,
-  findProductById,
-  findUserIdInCart,
-} from "../db/dbQueries.js";
+import { fetchCartData, findUserIdInCart } from "../db/dbQueries.js";
 
-export const CreateCart = async (req, res) => {
+export const CreateCart = async (req) => {
   const { userId, productId, quantity } = req.body;
-
-  let cart = await findUserIdInCart(userId);
-
-  const product = await findProductById(productId);
-
-  if (!product) {
-    throw new Error("Product Not Found!");
-  }
+  const query = { userId };
+  let cart = await findUserIdInCart(query);
 
   const name = product.name;
   const imgURL = product.imgURL;
@@ -44,17 +34,17 @@ export const CreateCart = async (req, res) => {
   return await cart.save();
 };
 
-export const getCartData = async (req, res) => {
-  const cartData = await fetchCartData(req);
+export const getCartData = async () => {
+  const cartData = await fetchCartData();
   return cartData;
 };
 
-export const updateCartQuantity = async (req, res) => {
+export const updateCartQuantity = async (req) => {
   const { userId, productId } = req.body;
-  const cart = await findUserIdInCart(userId);
-  if (!cart) {
-    throw new Error("User Not Found!");
-  }
+  const query = { userId };
+  const cart = await findUserIdInCart(query);
+  if (!cart) throw new Error("User Not Found!");
+
   const cartIndex = await cart.items.findIndex(
     (item) => item.productId.toString() === productId.toString()
   );
@@ -66,12 +56,13 @@ export const updateCartQuantity = async (req, res) => {
     (sum, item) => sum + item.quantity * item.price,
     0
   );
-  return await cart.save();
+  return cart.save();
 };
 
-export const removeCartItem = async (req, res) => {
+export const removeCartItem = async (req) => {
   const { userId, productId } = req.body;
-  const cart = await findUserIdInCart(userId);
+  const query = { userId };
+  const cart = await findUserIdInCart(query);
   console.log("cart : ", cart);
   if (!cart) {
     throw new Error("User not found!");

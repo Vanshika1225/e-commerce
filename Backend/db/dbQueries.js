@@ -3,54 +3,49 @@ import orderModel from "../Model/OrdersModel.js";
 import productsModel from "../Model/ProductsModel.js";
 import usersModel from "../Model/UsersModel.js";
 
-// user
-export const findExistingUserByEmail = async (email) => {
-  return await usersModel.findOne({ email });
+export const findUserByEmail = (query) => {
+  return usersModel.findOne(query);
 };
 
-export const findUserById = async (userId) => {
-  return await usersModel.findById(userId);
+export const findUserById = (query) => {
+  return usersModel.findById(query);
 };
 
-// product
-export const getAllProducts = async () => {
-  return await productsModel.find({});
+export const getAllProducts = () => {
+  return productsModel.find({});
 };
 
-export const findProductByIdAndUpdatee = async (id, updatedData) => {
-  return await productsModel.findByIdAndUpdate(id, updatedData, {
+export const findProductByIdAndUpdate = (query) => {
+  return productsModel.findByIdAndUpdate(query, {
     new: true,
     runValidators: true,
   });
 };
 
-export const findByIdAndDeleteProduct = async (productId) => {
-  return await productsModel.findByIdAndDelete(productId);
+export const findProductByIdAndDelete = (query) => {
+  return productsModel.findByIdAndDelete(query);
 };
 
-export const findProductById = async (productId) => {
-  return await productsModel.findById(productId);
+export const findProductById = (query) => {
+  return productsModel.findById(query);
 };
 
-// cart
-export const findUserIdInCart = async (userId) => {
-  return await cartModel.findOne({ userId });
+export const findUserIdInCart = (query) => {
+  return cartModel.findOne({ query });
 };
 
-export const fetchCartData = async () => {
-  return await cartModel.find({});
+export const fetchCartData = () => {
+  return cartModel.find({});
 };
 
-// order
-export const showOrderData = async () => {
-  return await orderModel.find({});
+export const showOrderData = () => {
+  return orderModel.find({});
 };
 
-export const deleteProductById = async (id) => {
-  return await orderModel.findByIdAndDelete(id);
+export const deleteProductById = (query) => {
+  return orderModel.findByIdAndDelete(query);
 };
 
-
-export const findOrderByIdInUpdate = async (id) => {
-  return await orderModel.findById(id);
+export const findOrderByIdInUpdate = (query) => {
+  return orderModel.findById(query);
 };

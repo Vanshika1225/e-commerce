@@ -6,10 +6,10 @@ import {
   showOrderData,
 } from "../db/dbQueries.js";
 
-export const createOrder = async (req, res) => {
+export const createOrder = async (req) => {
   let { id, productId, paymentOption, ShippingAddress, quantity } = req.body;
-
-  const product = await findProductById(productId);
+  const query = { productId };
+  const product = await findProductById(query);
   if (!product) {
     throw new Error("Product not found");
   }
@@ -40,11 +40,13 @@ export const getOrderData = async () => {
   return orderData;
 };
 
-export const updateData = async (req, res) => {
+export const updateData = async (req) => {
   let { id } = req.params;
   let { paymentOption, ShippingAddress, deliveryStatus } = req.body;
   id = id.replace(/^:/, "");
-  const order = await findOrderByIdInUpdate(id);
+
+  const query = {id}
+  const order = await findOrderByIdInUpdate(query);
 
   if (!order) {
     throw new Error("order not found");
@@ -67,18 +69,17 @@ export const updateData = async (req, res) => {
   };
   const updatedProduct = await order.updateOne(updatedData);
   if (!updatedProduct) {
-    throw new Error("Product not updated");
+    throw new Error("Product not updated"); 
   }
   return updatedProduct;
 };
 
-export const deleteOrder = async (req, res) => {
+export const deleteOrder = async (req) => {
   let { id } = req.params;
   id = id.replace(/^:/, "");
-  console.log(req.params);
 
-  const deletedOrder = await deleteProductById(id);
-  console.log(deletedOrder);
+  const query = {id}
+  const deletedOrder = await deleteProductById(query);
   if (!deletedOrder) {
     throw new Error("Order not found");
   }

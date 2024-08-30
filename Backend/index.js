@@ -13,9 +13,9 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use("/api/auth", userRouter);
-app.use('/api/products' , productRouter);
-app.use('/api/orders', OrderRouter);
-app.use("/api/cart",CartRouter);
+app.use("/api/products", productRouter);
+app.use("/api/orders", OrderRouter);
+app.use("/api/cart", CartRouter);
 
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);

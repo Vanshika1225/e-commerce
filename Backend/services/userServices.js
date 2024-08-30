@@ -1,13 +1,12 @@
-import { findExistingUserByEmail, findUserById } from "../db/dbQueries.js";
-import usersModel from "../Model/UsersModel.js";
+import { findUserByEmail, findUserById } from "../db/dbQueries.js";
 import bcrypt from "bcrypt";
-import jwt from 'jsonwebtoken'
-import {secretKey} from '../utils/AuthToken.js'
+import CreateToken from "../utils/CreateToken.js";
+import usersModel from "../Model/UsersModel.js";
 
-export const createUser = async (req, res) => {
+export const createUser = async (req) => {
   const { id, name, email, password, address, role } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
-  const userModel = new usersModel({
+  const userModel = usersModel.create({
     id,
     name,
     email,
@@ -15,37 +14,29 @@ export const createUser = async (req, res) => {
     address,
     role,
   });
-  await userModel.save();
+  return userModel;
 };
 
-export const LoginUser = async (req,res) => {
+export const LoginUser = async (req) => {
   const { email, password } = req.body;
-  const existingUser = await findExistingUserByEmail(email);
+  const query = { email };
+  const existingUser = await findUserByEmail(query);
   if (!existingUser) {
     throw new Error(`User ${email} does not exist");`);
   }
-
   if (!(await bcrypt.compare(password, existingUser.password))) {
     throw new Error("Incorrect password");
   }
-
-  const token = jwt.sign(
-    { userId: existingUser._id, role: existingUser.role },
-    secretKey,
-    {
-      expiresIn: "24h",
-    }
-  );
-
-  return { token };
+  return await CreateToken(existingUser);
 };
 
-export const getUserProfile = async (req, res) => {
+export const getUserProfile = async (req) => {
   let userId = req.params.id;
-  userId = userId.replace(/^:/, '');
-  const userData = await findUserById(userId);
+  userId = userId.replace(/^:/, "");
+  const query = userId
+  const userData = await findUserById(query);
   if (!userData) {
     throw new Error("User not found");
   }
-  return userData ;
-}
+  return userData;
+};

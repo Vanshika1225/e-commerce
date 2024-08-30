@@ -1,5 +1,5 @@
 import express from "express";
-const CartRouter = express.Router();
+const router = express.Router();
 import VerifyToken from "../utils/VerifyToken.js";
 import {
   CreateCart,
@@ -7,78 +7,46 @@ import {
   removeCartItem,
   updateCartQuantity,
 } from "../services/CartService.js";
+import Error from "../utils/ErrorMessage.js";
+import Success from "../utils/Success.js";
+import ErrorMessage from "../utils/ErrorMessage.js";
 
-CartRouter.post("/create-cart", VerifyToken, async (req, res) => {
+router.use(VerifyToken);
+
+router.post("/create-cart", async (req, res) => {
   try {
     const cartData = await CreateCart(req);
-    res.status(200).json({
-      success: true,
-      message: "Cart created successfully",
-      cartData,
-    });
+    Success(res, 200, message.success, cartData);
   } catch (error) {
-    console.log(error);
-    res.status(401).json({
-      success: true,
-      message: "Something went wrong",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-CartRouter.get("/mshow-cart", VerifyToken, async (req, res) => {
-  try{
-    const getData = await getCartData(req);;
-    res.status(200).json({
-      success:true,
-      message:"Cart Data fetched successfully!",
-      getData
-    })
-
-  }catch(error){
-    console.log(error);
-    res.status(401).json({
-      success:false,
-      message:"something went wrong !",
-      error:error.message
-    })
+router.get("/mshow-cart", async (req, res) => {
+  try {
+    const getData = await getCartData(req);
+    Success(res, 200, message.success, getData);
+  } catch (error) {
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-CartRouter.put("/update-cart", VerifyToken, async (req, res) => {
+router.put("/update-cart", async (req, res) => {
   try {
     const updatedData = await updateCartQuantity(req);
-    res.status(200).json({
-      success: true,
-      message: "Cart Updated Successfully!",
-      updatedData,
-    });
+    Success(res, 200, message.success, updatedData);
   } catch (error) {
-    console.log(error);
-    res.status(401).json({
-      success: true,
-      message: "Something went wrong",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-CartRouter.delete("/remove-cart", VerifyToken, async (req, res) => {
+router.delete("/remove-cart", async (req, res) => {
   try {
     const updatedCart = await removeCartItem(req);
-    res.status(200).json({
-      success: true,
-      message: "Cart item removed successfully",
-      updatedCart,
-    });
+    Success(res, 200, message.success, updatedCart);
   } catch (error) {
-    console.log(error);
-    res.status(401).json({
-      success: true,
-      message: "Something went wrong",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-export default CartRouter;
+export default router;

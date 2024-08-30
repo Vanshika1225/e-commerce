@@ -6,79 +6,47 @@ import {
   updateData,
 } from "../services/OrderServices.js";
 import VerifyToken from "../utils/VerifyToken.js";
+import Success from "../utils/Success.js";
+import ErrorMessage from "../utils/ErrorMessage.js";
 
-const OrderRouter = express.Router();
+const router = express.Router();
 
-OrderRouter.post("/create-order", VerifyToken, async (req, res) => {
+router.use(VerifyToken);
+
+router.post("/create-order", async (req, res) => {
   try {
     const orders = await createOrder(req);
-    res.status(201).json({
-      success: true,
-      message: "Order created successfully",
-      orders,
-    });
+    Success(res, 200, message.success, orders);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Error while creating order",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-OrderRouter.get("/get-orders", VerifyToken, async (req, res) => {
+router.get("/get-orders", async (res) => {
   try {
     const OrderData = await getOrderData();
-    res.status(200).json({
-      success: true,
-      message: "Order data fetched successfully!",
-      OrderData,
-    });
+    Success(res, 200, message.success, OrderData);
   } catch (error) {
-    console.log(error);
-    res.status(401).json({
-      success: false,
-      message: "Something went wrong!",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-OrderRouter.put("/update-order/:id", VerifyToken, async (req, res) => {
-  try{
+router.put("/update-order/:id", async (req, res) => {
+  try {
     const updatedData = await updateData(req);
-    res.status(200).json({
-      success:true,
-      message:"Order updated successfully!",
-      updatedData
-    })
-  }catch(error){
-    console.log(error);
-    res.status(401).json({
-      success:false,
-      message:"Something went wrong!",
-      error:error.message
-    })
+    Success(res, 200, message.success, updatedData);
+  } catch (error) {
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-OrderRouter.delete("/delete-order/:id", VerifyToken, async (req, res) => {
+router.delete("/delete-order/:id", async (req, res) => {
   try {
     const deletedData = await deleteOrder(req);
-    res.status(200).json({
-      success: true,
-      message: "Order deleted successfully",
-      deletedData,
-    });
+    Success(res, 200, message.success, deletedData);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Error while deleting order",
-      error: error.message,
-    });
+    ErrorMessage(res, error.message, 401);
   }
 });
 
-export default OrderRouter;
+export default router;

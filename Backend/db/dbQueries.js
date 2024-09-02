@@ -15,15 +15,15 @@ export const getAllProducts = () => {
   return productsModel.find({});
 };
 
-export const findProductByIdAndUpdate = (query) => {
-  return productsModel.findByIdAndUpdate(query, {
+export const UpdateProduct = (query,updatedData) => {
+  return productsModel.updateOne(query, updatedData, {
     new: true,
     runValidators: true,
   });
 };
 
-export const findProductByIdAndDelete = (query) => {
-  return productsModel.findByIdAndDelete(query);
+export const DeleteProductQuery = (query) => {
+  return productsModel.deleteOne(query);
 };
 
 export const findProductById = (query) => {

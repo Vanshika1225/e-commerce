@@ -16,16 +16,16 @@ router.use(VerifyToken);
 router.post("/create-order", async (req, res) => {
   try {
     const orders = await createOrder(req);
-    Success(res, 200, message.success, orders);
+    Success(res, 200, orders);
   } catch (error) {
     ErrorMessage(res, error.message, 401);
   }
 });
 
-router.get("/get-orders", async (res) => {
+router.get("/get-orders", async (req,res) => {
   try {
     const OrderData = await getOrderData();
-    Success(res, 200, message.success, OrderData);
+    Success(res, 200, OrderData);
   } catch (error) {
     ErrorMessage(res, error.message, 401);
   }
@@ -34,7 +34,7 @@ router.get("/get-orders", async (res) => {
 router.put("/update-order/:id", async (req, res) => {
   try {
     const updatedData = await updateData(req);
-    Success(res, 200, message.success, updatedData);
+    Success(res, 200, updatedData);
   } catch (error) {
     ErrorMessage(res, error.message, 401);
   }
@@ -43,7 +43,7 @@ router.put("/update-order/:id", async (req, res) => {
 router.delete("/delete-order/:id", async (req, res) => {
   try {
     const deletedData = await deleteOrder(req);
-    Success(res, 200, message.success, deletedData);
+    Success(res, 200, deletedData);
   } catch (error) {
     ErrorMessage(res, error.message, 401);
   }

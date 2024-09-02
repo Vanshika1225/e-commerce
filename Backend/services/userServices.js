@@ -33,7 +33,7 @@ export const LoginUser = async (req) => {
 export const getUserProfile = async (req) => {
   let userId = req.params.id;
   userId = userId.replace(/^:/, "");
-  const query = userId
+  const query = userId;
   const userData = await findUserById(query);
   if (!userData) {
     throw new Error("User not found");

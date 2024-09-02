@@ -13,19 +13,20 @@ const router = express.Router();
 
 router.use(VerifyToken);
 
-router.post("/add-product", (req, res) => {
+router.post("/add-product", async (req, res) => {
   try {
-    const AddProduct = addProduct(req);
-    Success(res, 200, message.success, AddProduct);
+    const AddProduct = await addProduct(req);
+    console.log(AddProduct);
+    Success(res, 200, AddProduct);
   } catch (error) {
     ErrorMessage(res, error.message, 401);
   }
 });
 
-router.get("/product-list", async (res) => {
+router.get("/product-list", async (req,res) => {
   try {
     const products = await ShowAllProducts();
-    Success(res, 200, message.success, products);
+    Success(res, 200, products);
   } catch (error) {
     ErrorMessage(res, error.message, 401);
   }
@@ -34,7 +35,7 @@ router.get("/product-list", async (res) => {
 router.put("/edit-product/:id", async (req, res) => {
   try {
     const product = await EditProduct(req);
-    Success(res, 200, message.success, product);
+    Success(res, 200, product);
   } catch (error) {
     ErrorMessage(res, error.message, 401);
   }
@@ -43,7 +44,7 @@ router.put("/edit-product/:id", async (req, res) => {
 router.delete("/delete-product/:id", async (req, res) => {
   try {
     const deletedProduct = await DeleteProduct(req);
-    Success(res, 200, message.success, deletedProduct);
+    Success(res, 200, deletedProduct);
   } catch (error) {
     ErrorMessage(res, error.message, 401);
   }

@@ -1,14 +1,13 @@
 import productsModel from "../Model/ProductsModel.js";
 import {
-  findProductByIdAndDelete,
-  findProductByIdAndUpdate,
   getAllProducts,
+  UpdateProduct,
+  DeleteProductQuery,
 } from "../db/dbQueries.js";
 
 export const addProduct = (req) => {
-  const { name, description, price, category, imgURL, stockQuantity, ratings } =
-    req.body;
-  const newProduct = new productsModel({
+  const { name, description, price, category, imgURL, stockQuantity, ratings } = req.body;
+  return productsModel.create({
     name,
     description,
     price,
@@ -17,20 +16,18 @@ export const addProduct = (req) => {
     stockQuantity,
     ratings,
   });
-  newProduct.save();
 };
 
 export const ShowAllProducts = async () => {
-  const products = await getAllProducts();
-  return products;
+  return await getAllProducts();
 };
 
 export const EditProduct = async (req) => {
   let { id } = req.params;
   id = id.replace(/^:/, "");
   const updatedData = req.body;
-  const query = { id, updatedData };
-  const product = await findProductByIdAndUpdate(query);
+  const query = { _id: id };
+  const product = await UpdateProduct(query, updatedData);
   if (!product) {
     throw new Error("Product not found");
   }
@@ -40,9 +37,10 @@ export const EditProduct = async (req) => {
 export const DeleteProduct = async (req) => {
   let productId = req.params.id;
   productId = productId.replace(/^:/, "");
-  const query = { productId };
-  const deletedProduct = await findProductByIdAndDelete(query);
-  if (!deletedProduct) {
-    throw new Error("Product not found");
+  const query = { _id: productId };
+  const deletedProduct = await DeleteProductQuery(query);
+  if (!deletedProduct.deletedCount) {
+    throw new Error("Product not eXIST");
   }
+  return deletedProduct;
 };

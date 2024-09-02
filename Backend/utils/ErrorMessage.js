@@ -5,4 +5,4 @@ const ErrorMessage = (res, error, statusCode) => {
   });
 };
 
-export default ErrorMessage
+export default ErrorMessage;

@@ -1,5 +1,5 @@
 const ErrorMessage = (res, error, statusCode) => {
-  console.log(error);
+  console.error(error);
   res.status(statusCode).json({
     error,
   });

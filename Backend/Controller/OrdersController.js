@@ -22,7 +22,7 @@ router.post("/create-order", async (req, res) => {
   }
 });
 
-router.get("/get-orders", async (req,res) => {
+router.get("/get-orders", async (req, res) => {
   try {
     const OrderData = await getOrderData();
     Success(res, 200, OrderData);

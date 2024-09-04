@@ -43,4 +43,4 @@ export const DeleteProduct = async (req) => {
     throw new Error("Product not eXIST");
   }
   return deletedProduct;
-};
+}; 

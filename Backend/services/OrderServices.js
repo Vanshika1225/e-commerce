@@ -10,6 +10,7 @@ export const createOrder = async (req) => {
   let { id ,productId, paymentOption, ShippingAddress, quantity } = req.body;
   const query = { _id:productId };
   const product = await findProductById(query);
+  console.log(product)
   if (!product) {
     throw new Error("Product not found");
   }

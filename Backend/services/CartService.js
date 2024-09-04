@@ -1,27 +1,30 @@
 import cartModel from "../Model/CartModel.js";
-import { fetchCartData, findUserIdInCart } from "../db/dbQueries.js";
+import {
+  fetchCartData,
+  findProductById,
+  findUserIdInCart,
+} from "../db/dbQueries.js";
 
 export const CreateCart = async (req) => {
   const { userId, productId, quantity } = req.body;
-  const query = { userId };
+  const query = { userId, _id: productId };
   let cart = await findUserIdInCart(query);
 
+  const product = await findProductById(query);
   const name = product.name;
   const imgURL = product.imgURL;
   const price = product.price;
 
   if (!cart) {
-    cart = new cartModel({
+    cart = cartModel.create({
       userId,
       items: [],
       totalAmount: 0,
     });
   }
-
   const cartIndex = cart.items.findIndex(
     (item) => item.productId.toString() === productId.toString()
   );
-
   if (cartIndex !== -1) {
     cart.items[cartIndex].quantity += quantity;
   } else {
@@ -31,12 +34,11 @@ export const CreateCart = async (req) => {
     (sum, item) => sum + product.price * item.quantity,
     0
   );
-  return await cart.save();
+  return cart.save();
 };
 
 export const getCartData = async () => {
-  const cartData = await fetchCartData();
-  return cartData;
+  return await fetchCartData();
 };
 
 export const updateCartQuantity = async (req) => {
@@ -49,7 +51,7 @@ export const updateCartQuantity = async (req) => {
     (item) => item.productId.toString() === productId.toString()
   );
   if (cartIndex === -1) {
-    throw new Error("Product Not Fou7nd!");
+    throw new Error("Product Not Found!");
   }
   cart.items[cartIndex].quantity = req.body.quantity;
   cart.totalAmount = cart.items.reduce(
@@ -63,7 +65,6 @@ export const removeCartItem = async (req) => {
   const { userId, productId } = req.body;
   const query = { userId };
   const cart = await findUserIdInCart(query);
-  console.log("cart : ", cart);
   if (!cart) {
     throw new Error("User not found!");
   }

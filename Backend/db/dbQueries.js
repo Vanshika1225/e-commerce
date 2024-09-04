@@ -31,7 +31,8 @@ export const findProductById = (query) => {
 };
 
 export const findUserIdInCart = (query) => {
-  return cartModel.findOne({ query });
+  const userId = query.userId;
+  return cartModel.findOne({ userId });
 };
 
 export const fetchCartData = () => {
